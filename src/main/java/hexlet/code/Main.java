@@ -1,29 +1,38 @@
 package hexlet.code;
 
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 
 
 public class Main {
-    public static void main(String[] args) throws SQLException {
-        try (var conn = DriverManager.getConnection("jdbc:h2:mem:hexlet_test")) {
 
-            var sql = "CREATE TABLE users (id BIGINT PRIMARY KEY AUTO_INCREMENT, username VARCHAR(255), phone VARCHAR(255))";
-            try (var statement = conn.createStatement()) {
+    public static void main(String[] args) throws SQLException {
+        try (Connection conn = DriverManager.getConnection("jdbc:h2:mem:hexlet")) {
+            String sql = "CREATE TABLE cars (id BIGINT PRIMARY KEY AUTO_INCREMENT, brand VARCHAR(255), model VARCHAR(255))";
+            try (Statement statement = conn.createStatement()) {
                 statement.execute(sql);
             }
 
-            var sql2 = "INSERT INTO users (username, phone) VALUES ('tommy', '123456789')";
-            try (var statement2 = conn.createStatement()) {
-                statement2.executeUpdate(sql2);
+            sql = "INSERT INTO cars (brand, model) VALUES (?, ?)";
+            try (PreparedStatement statement = conn.prepareStatement(sql)) {
+                statement.setString(1, "kia");
+                statement.setString(2, "sorento");
+                statement.executeUpdate();
+
+                statement.setString(1, "bmw");
+                statement.setString(2, "x5");
+                statement.executeUpdate();
+
+                statement.setString(1, "audi");
+                statement.setString(2, "q7");
+                statement.executeUpdate();
             }
 
-            var sql3 = "SELECT * FROM users";
-            try (var statement3 = conn.createStatement()) {
-                var resultSet = statement3.executeQuery(sql3);
+            sql = "SELECT * FROM cars ORDER BY brand ASC";
+            try (PreparedStatement statement = conn.prepareStatement(sql)) {
+                ResultSet resultSet = statement.executeQuery();
+
                 while (resultSet.next()) {
-                    System.out.println(resultSet.getString("username"));
-                    System.out.println(resultSet.getString("phone"));
+                    System.out.printf("%s %s\n", resultSet.getString("brand"), resultSet.getString("model"));
                 }
             }
         }
