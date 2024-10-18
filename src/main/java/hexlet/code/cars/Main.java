@@ -1,4 +1,4 @@
-package hexlet.code;
+package hexlet.code.cars;
 
 import java.sql.*;
 

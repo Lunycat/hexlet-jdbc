@@ -17,8 +17,8 @@ public class Solution {
             statement.execute(sqlCreateTable);
         }
 
-        User user1 = new User("Maria", "+7900434334");
-        User user2 = new User("Maria", "+7900434334");
+        User user1 = new User("Maria", "+79043433467");
+        User user2 = new User("Egor", "+79047501953");
         userDAO.save(user1);
         userDAO.save(user2);
         System.out.println(user1.getId()); // 1
@@ -26,5 +26,8 @@ public class Solution {
 
         User user3 = userDAO.find(user1.getId()).get();
         System.out.println(user1.getId() == user3.getId()); // true
+
+        userDAO.delete(1L);
+        System.out.println(userDAO.find(1L).orElse(null)); // null
     }
 }
